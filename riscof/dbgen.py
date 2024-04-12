@@ -114,13 +114,16 @@ def createdict(file):
 
                     check = []
                     define = []
+                    cgf_macro = []
                     for cond in conditions:
                         cond = cond.strip()
                         if (cond.startswith('check')):
                             check.append(cond)
                         elif (cond.startswith('def')):
                             define.append(cond)
-                    part_dict[part_number] = {'check': check, 'define': define,'coverage_labels':labels}
+                        elif (cond.startswith('mac')):
+                            cgf_macro.append(cond)
+                    part_dict[part_number] = {'check': check, 'define': define, 'mac':cgf_macro, 'coverage_labels':labels}
                 else:
                     logger.warning("{}:{}: Incorrect Case String ({})".format(file, lno, part_number))
                     logger.warning("Skipping file {}. This test will not be included in the\

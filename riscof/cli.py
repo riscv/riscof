@@ -153,6 +153,7 @@ class CustomOption(click.Option):
 def cli(ctx,verbose):
     logger.level(verbose)
     logger.info('****** RISCOF: RISC-V Architectural Test Framework {0} *******'.format(__version__ ))
+    logger.info("Hello from RICSOF -- Hammad One")
     logger.info('using riscv_isac version : ' + str(riscv_isac.__version__))
     logger.info('using riscv_config version : ' + str(riscv_config.__version__))
     ctx.obj = Context()
@@ -376,8 +377,13 @@ def run(ctx,config,work_dir,suite,env,no_browser,dbfile,testfile,no_ref_run,no_d
         type=click.Path(resolve_path=True,readable=True,exists=True),
         help="Coverage Group File(s). Multiple allowed.",required=True
     )
+@click.option(
+        '--header-file','-h',metavar='PATH',
+        type=click.Path(resolve_path=True,readable=True,exists=True),
+        help="YAML macro file to include"
+    )
 @click.pass_context
-def coverage(ctx,config,work_dir,suite,env,no_browser,cgf_file):
+def coverage(ctx,config,work_dir,suite,env,no_browser,cgf_file,header_file):
     setup_directories(work_dir)
     ctx.obj.mkdir = False
     ctx.obj.config, ctx.obj.config_dir = read_config(config)
@@ -399,7 +405,7 @@ def coverage(ctx,config,work_dir,suite,env,no_browser,cgf_file):
     with open(platform_file, "r") as platfile:
         pspecs = platfile.read()
     report, for_html, test_stats, coverpoints = framework.run_coverage(base, isa_file, platform_file,
-            work_dir, cgf_file)
+            work_dir, cgf_file, header_file)
     report_file = open(work_dir+'/suite_coverage.rpt','w')
     utils.dump_yaml(report, report_file)
     report_file.close()

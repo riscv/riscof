@@ -79,7 +79,7 @@ class sail_cSim(pluginTemplate):
             raise SystemExit(1)
 
 
-    def runTests(self, testList, cgf_file=None):
+    def runTests(self, testList, cgf_file=None, header_file= None):
         if os.path.exists(self.work_dir+ "/Makefile." + self.name[:-1]):
             os.remove(self.work_dir+ "/Makefile." + self.name[:-1])
         make = utils.makeUtil(makefilePath=os.path.join(self.work_dir, "Makefile." + self.name[:-1]))
@@ -107,13 +107,17 @@ class sail_cSim(pluginTemplate):
             for label in testentry['coverage_labels']:
                 cov_str+=' -l '+label
 
+            cgf_mac = ' '
+            for macro in testentry['mac']:
+                cgf_mac+=' -cm '+macro
+
             if cgf_file is not None:
                 coverage_cmd = 'riscv_isac --verbose info coverage -d \
                         -t {0}.log --parser-name c_sail -o coverage.rpt  \
                         --sig-label begin_signature  end_signature \
                         --test-label rvtest_code_begin rvtest_code_end \
-                        -e ref.elf -c {1} -x{2} {3};'.format(\
-                        test_name, ' -c '.join(cgf_file), self.xlen, cov_str)
+                        -e ref.elf -c {1} -x{2} {3} -h {4};'.format(\
+                        test_name, ' -c '.join(cgf_file), self.xlen, cov_str, header_file)
             else:
                 coverage_cmd = ''
 

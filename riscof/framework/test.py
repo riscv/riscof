@@ -305,6 +305,7 @@ def generate_test_pool(ispec, pspec, workdir, dbfile = None):
     for file in db:
         macros = []
         cov_labels = []
+        cgf_macros = []
         for part in db[file]['parts']:
             include = True
             part_dict = db[file]['parts'][part]
@@ -318,6 +319,8 @@ def generate_test_pool(ispec, pspec, workdir, dbfile = None):
                     temp = eval_macro(macro, spec)
                     if (temp[0]):
                         macros.extend(temp[1])
+                for cgf_macro in part_dict['mac']:
+                    cgf_macros.extend([cgf_macro.split(" ")[1]])
         if not macros == []:
             try:
                 isa = prod_isa(ispec['ISA'],db[file]['isa'])
@@ -336,7 +339,7 @@ def generate_test_pool(ispec, pspec, workdir, dbfile = None):
             elif re.match(r"^[^(Z,z)]+F.*$",isa):
                 macros.append("FLEN=32")
             test_pool.append(
-                (file, db[file]['commit_id'], macros,isa,cov_labels))
+                (file, db[file]['commit_id'], macros,isa,cov_labels,cgf_macros))
     logger.info("Selecting Tests.")
     for entry in test_pool:
         # logger.info("Test file:" + entry[0])
@@ -350,6 +353,7 @@ def generate_test_pool(ispec, pspec, workdir, dbfile = None):
         temp['work_dir']=work_dir
         temp['macros']=entry[2]
         temp['isa']=entry[3]
+        temp['mac']=entry[5]
         temp['coverage_labels'] = entry[4]
         if constants.suite in entry[0]:
             temp['test_path'] = entry[0]

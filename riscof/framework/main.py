@@ -8,6 +8,8 @@ import riscof.framework.test as test
 import riscof.utils as utils
 import riscof.constants as constants
 import riscv_isac.coverage as isac
+from riscv_isac.isac import preprocessing
+from riscv_isac.plugins.translator_cgf import Translate_cgf
 from riscv_isac.utils import load_cgf
 from riscv_isac.cgf_normalize import expand_cgf
 import ruamel
@@ -76,7 +78,7 @@ def find_elf_size(elf):
         # size = e_shoff + e_ehsize + (e_phnum * e_phentsize) + (e_shnum * e_shentsize)
         return (sum([segment['p_memsz'] for segment in elffile.iter_segments()]),code_size,data_size,sign_size)
 
-def run_coverage(base, dut_isa_spec, dut_platform_spec, work_dir, cgf_file=None):
+def run_coverage(base, dut_isa_spec, dut_platform_spec, work_dir, cgf_file=None, header_file=None):
     '''
         Entry point for the framework module. This function initializes and sets up the required
         variables for the tests to run.
@@ -111,12 +113,13 @@ def run_coverage(base, dut_isa_spec, dut_platform_spec, work_dir, cgf_file=None)
 
     test_list, test_pool = test.generate_test_pool(ispec, pspec, work_dir)
     logger.info("Running Tests on Reference.")
-    base.runTests(test_list, cgf_file)
+    base.runTests(test_list, cgf_file, header_file)
 
 
     logger.info("Merging Coverage reports")
     cov_files = []
     test_stats = []
+    cgf_macros = ()
     for entry in test_pool:
         work_dir = test_list[entry[0]]['work_dir']
         test_name = work_dir.rsplit('/',1)[1][:-2]
@@ -126,15 +129,16 @@ def run_coverage(base, dut_isa_spec, dut_platform_spec, work_dir, cgf_file=None)
                             'test_size': [str(entry) for entry in find_elf_size(elf)],
                             'test_groups': str(set(test_list[entry[0]]['coverage_labels']))
                             })
+        cgf_macros += tuple(entry[5])
     flen = 0
     if 'F' in ispec['ISA']:
         flen = 32
     if 'D' in ispec['ISA']:
         flen = 64
     if 64 in ispec['supported_xlen']:
-        results = isac.merge_coverage(cov_files, expand_cgf(cgf_file,64,flen), True)
+        results = isac.merge_coverage(cov_files, preprocessing(Translate_cgf(expand_cgf(cgf_file,64,flen), header_file, cgf_macros)), True)
     elif 32 in ispec['supported_xlen']:
-        results = isac.merge_coverage(cov_files, expand_cgf(cgf_file,32,flen), True)
+        results = isac.merge_coverage(cov_files, preprocessing(Translate_cgf(expand_cgf(cgf_file,32,flen), header_file, cgf_macros)), True)
 
 
 #    results_yaml = yaml.load(results)
