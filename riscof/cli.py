@@ -153,7 +153,6 @@ class CustomOption(click.Option):
 def cli(ctx,verbose):
     logger.level(verbose)
     logger.info('****** RISCOF: RISC-V Architectural Test Framework {0} *******'.format(__version__ ))
-    logger.info("Hello from RICSOF -- Hammad One")
     logger.info('using riscv_isac version : ' + str(riscv_isac.__version__))
     logger.info('using riscv_config version : ' + str(riscv_config.__version__))
     ctx.obj = Context()
