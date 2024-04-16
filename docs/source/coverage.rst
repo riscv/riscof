@@ -40,13 +40,39 @@ used to check for coverage. A sample ``config.ini`` is shown below::
    [cSail]                                                                                             
    pluginpath=/home/neel/temp/riscof-plugins/sail_cSim
 
+To check the options available for the ``coverage``, help text can be accessed by executing ``riscof coverage --help``
+
+.. code-block:: shell-session
+
+   Usage: riscof coverage [OPTIONS]
+
+      Run the tests on DUT and reference and compare signatures
+
+   Options:
+   --suite PATH            Path to the custom Suite Directory.  [required]
+   --env PATH              Path to the env directory for the suite.  [required]
+   --config PATH           The Path to the config file. [Default=./config.ini]
+   --work-dir PATH         Path to the work directory. [Default =
+                           ./riscof_work]
+   --no-browser            Do not open the browser for showing the test report.
+   -c, --cgf-file PATH     Coverage Group File(s). Multiple allowed.
+                           [required]
+   -h, --header-file PATH  YAML macro file to include
+   --help                  Show this message and exit.
+
 To run coverage
 
 .. code-block:: shell-session
 
    $ riscof --verbose debug coverage --suite /path/to/suite --env /path/to/suite
 
-The log of the above command is shown below:
+Or, to run coverage including the macros file:
+
+.. code-block:: shell-session
+
+   $ riscof --verbose debug coverage --suite /path/to/suite --env /path/to/suite -h /path/to/header_file
+
+The log of the above commands is shown below:
 
 .. code-block:: shell-session
 
@@ -71,6 +97,8 @@ The log of the above command is shown below:
      INFO | [--riscof.framework.test--]: Selecting Tests.
      INFO | [--riscof.framework.main--]: Running Tests on Reference.
      INFO | [--riscof.framework.main--]: Merging Coverage reports
+     INFO | [--riscof.framework.main--]: Translating
+     INFO | [--riscof.framework.main--]: Preprocessing
      INFO | [--root--]: Test report generated at /home/neel/temp/riscof_work/coverage.html.
      INFO | [--root--]: Openning test report in web-browser
 

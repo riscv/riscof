@@ -53,6 +53,7 @@ Optional arguments from the cli:
   ``./riscof_work``
 - no-browser: when used, RISCOF skips automatically opening the html report in the default web
   browser.
+- header file: macro file to include for the coverage of the test suite. This can be added using the ``-h`` flag.
 
 The coverage command simply passes the cgf files to the reference plugin's runTests function. The
 Reference plugin is responsible to generating a yaml based coverage report for each test using ``riscv-isac``. 

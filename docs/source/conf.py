@@ -35,8 +35,7 @@ version = get_version()
 release = version
 
 def setup(app):
-    app.add_stylesheet("custom.css")
-    app.add_css_file("_static/custom.css")
+    app.add_css_file("custom.css")
 
 # -- General configuration ---------------------------------------------------
 
@@ -88,6 +87,8 @@ exclude_patterns = ['_build']
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
 
+#Mention the reference files
+bibtex_bibfiles = ['refs.bib']
 
 # -- Options for HTML output -------------------------------------------------
 
