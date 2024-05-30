@@ -1,0 +1,31 @@
+name: Build and Push ACT Docker
+
+on:
+  # This workflow only runs when manually triggered
+  workflow_dispatch:
+
+jobs:
+  docker-qemu-push:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push act docker
+        uses: docker/build-push-action@v5
+        with:
+          file: .github/act-docker/Dockerfile
+          tags: ghcr.io/riscv-software-src/riscof/act:latest
+          push: true
