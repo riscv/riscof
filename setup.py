@@ -53,6 +53,9 @@ setup(name="riscof",
           ]
       },
       install_requires=read_requires(),
+      dependency_links=[
+          'git+https://github.com/riscv-software-src/riscv-isac@dev'
+      ],
       python_requires=">=3.6.0",
       entry_points={
           "console_scripts": ["riscof=riscof.cli:cli"],
