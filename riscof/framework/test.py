@@ -279,7 +279,7 @@ def prod_isa(dut_isa, test_isa):
     raise TestSelectError("Test Selected without the relevant extensions being available on DUT.")
     return ''
 
-def generate_test_pool(ispec, pspec, workdir, dbfile = None):
+def generate_test_pool(ispec, pspec, workdir, dbfile = None, filter = None):
     '''
         Funtion to select the tests which are applicable for the DUT and generate the macros
         necessary for each test.
@@ -303,6 +303,8 @@ def generate_test_pool(ispec, pspec, workdir, dbfile = None):
     else:
         db = utils.load_yaml(constants.framework_db)
     for file in db:
+        if filter is not None and re.search(filter, file) is None:
+            continue
         macros = []
         cov_labels = []
         cgf_macros = []

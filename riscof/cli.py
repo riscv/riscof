@@ -381,8 +381,11 @@ def run(ctx,config,work_dir,suite,env,no_browser,dbfile,testfile,no_ref_run,no_d
         type=click.Path(resolve_path=True,readable=True,exists=True),
         help="YAML macro file to include"
     )
+@click.option(
+        '--filter', metavar='PATH', type=str,
+        help="Filter testcases to be run by regex")
 @click.pass_context
-def coverage(ctx,config,work_dir,suite,env,no_browser,cgf_file,header_file):
+def coverage(ctx,config,work_dir,suite,env,no_browser,cgf_file,header_file,filter):
     setup_directories(work_dir)
     ctx.obj.mkdir = False
     ctx.obj.config, ctx.obj.config_dir = read_config(config)
@@ -404,7 +407,7 @@ def coverage(ctx,config,work_dir,suite,env,no_browser,cgf_file,header_file):
     with open(platform_file, "r") as platfile:
         pspecs = platfile.read()
     report, for_html, test_stats, coverpoints = framework.run_coverage(base, isa_file, platform_file,
-            work_dir, cgf_file, header_file)
+            work_dir, cgf_file, header_file, filter)
     report_file = open(work_dir+'/suite_coverage.rpt','w')
     utils.dump_yaml(report, report_file)
     report_file.close()
