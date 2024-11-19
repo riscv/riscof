@@ -78,7 +78,7 @@ def find_elf_size(elf):
         # size = e_shoff + e_ehsize + (e_phnum * e_phentsize) + (e_shnum * e_shentsize)
         return (sum([segment['p_memsz'] for segment in elffile.iter_segments()]),code_size,data_size,sign_size)
 
-def run_coverage(base, dut_isa_spec, dut_platform_spec, work_dir, cgf_file=None, header_file=None):
+def run_coverage(base, dut_isa_spec, dut_platform_spec, work_dir, cgf_file=None, header_file=None, filter=None):
     '''
         Entry point for the framework module. This function initializes and sets up the required
         variables for the tests to run.
@@ -110,8 +110,7 @@ def run_coverage(base, dut_isa_spec, dut_platform_spec, work_dir, cgf_file=None,
 
     logger.debug("Running Build for Reference")
     base.build(dut_isa_spec, dut_platform_spec)
-
-    test_list, test_pool = test.generate_test_pool(ispec, pspec, work_dir)
+    test_list, test_pool = test.generate_test_pool(ispec, pspec, work_dir, filter=filter)
     logger.info("Running Tests on Reference.")
     base.runTests(test_list, cgf_file, header_file)
 
